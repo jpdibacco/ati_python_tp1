@@ -104,6 +104,25 @@ def makeGroup(name,num):
     f = str(num)
     cmds.group( em=True, n=name+f )
 
+
+#make it stone by stone using a function:
+def makePlafond(amount, initX, initY, initZ, name, floor, fuu, size,gname):
+#fuu is not "fuu" is just a number for the floor
+#convert some ints into strings:
+    n = str(name)
+    f = str(floor)
+    fu = str(fuu)
+#for loop:
+    for i in range(amount):
+        # first row:
+        s = str(i)
+        cmds.polyCylinder(n='p'+name+s)
+        cmds.move( initX, initY, initZ + i * (size+0.1), f + n + s)
+        cmds.xform(f + n + s, s = (size,3,size))
+        cmds.rotate(0,0,'45deg', f+n+s)
+        #add the obcjects inside the groups:
+        cmds.parent(f+n+s,gname+ fu , relative=True )
+
 # let's make a loop with the function:
 makeGroup('floor',1)
 makeGroup('column',1)
@@ -199,22 +218,64 @@ for i in range(1,4):
     makeColumnsBase_Pe(i, 15 ,-17 ,'m_Top_b'+s, 2, 'minicolumn', 1)
 
 cmds.scale(0.3,0.3,0.3,'minicolumn1')
-cmds.move(-39,15.5,19,'minicolumn1')
-
+#cmds.move(-39,15.5,22,'minicolumn1')
+makeGroup('f_side',1)
+#cmds.parent('minicolumn1', 'f_side1' , relative=True)
+makeGroup('b_side',1)
 # let's try to loop this...
-for i in range(1,11):
-    s = str(i)
-    cmds.duplicate('minicolumn'+s)
-    cmds.move(-39,15.5,19 - i*3,'minicolumn'+s)
-
 for i in range(1,12):
     s = str(i)
     cmds.duplicate('minicolumn'+s)
-    cmds.move(30,15.5,22 - i*3,'minicolumn'+s)
+    cmds.move(-39,15.5,22 - i*3,'minicolumn'+s)
+    cmds.parent('minicolumn'+s, 'f_side1' , relative=True)
+
+for i in range(12,24):
+    s = str(i)
+    cmds.duplicate('minicolumn'+s)
+    cmds.move(30,15.5,10 - i*3,'minicolumn'+s)
+    cmds.parent('minicolumn'+s, 'b_side1' , relative=True)
+
+
+#small adjustments:
+
+cmds.move(0,0,1,'f_side1')
+cmds.move(0,0,47.5,'b_side1')
+
+#let's make the sides:
+
+makeGroup('miniside',1)
+
+for i in range(1,5):
+    s = str(i)
+    makeColumnsBase(i, 15 ,-17 ,'n_Corinthian'+s, 2, 'miniside', 1)
+    makeColumnsBase_b(i, 15 ,-17 ,'n_Corin'+s, 2, 'miniside', 1)
+    makeColumnsBase_Pa(i, 15 ,-17 ,'n_Carin'+s, 2, 'miniside', 1)
+    makeColumnsBase_Pb(i, 15 ,-17 ,'n_Rota'+s, 2, 'miniside', 1)
+    makeColumnsBase_Pc(i, 15 ,-17 ,'n_Carin_b'+s, 2, 'miniside', 1)
+    makeColumnsBase_Pd(i, 15 ,-17 ,'n_Top_a'+s, 2, 'miniside', 1)
+    makeColumnsBase_Pe(i, 15 ,-17 ,'n_Top_b'+s, 2, 'miniside', 1)
+
+cmds.scale(0.3,0.3,0.3,'miniside1')
+
+makeGroup('side', 1)
+
+for i in range(1,24):
+    s = str(i)
+    cmds.duplicate('miniside'+s)
+    cmds.move(-39,15.5,19 - i*3,'miniside'+s)
+    cmds.parent('miniside'+s, 'side1' , relative=True)
+
+cmds.rotate(0,'90deg',0,'side1')
+cmds.move(20.5,0,-16,'side1')
+cmds.duplicate('side1')
+cmds.move(20.5,0,-51,'side2')
+
+#let's make el "techo"
+
 
 cmds.polyCube(n='techo')
 cmds.move(0,18,1,'techo')
-cmds.scale(69,3,36, 'techo')
+cmds.scale(69,3,34, 'techo')
 cmds.duplicate('techo')
 cmds.scale(72,1,38, 'techo1')
 cmds.move(0,20.5,1,'techo1')
@@ -225,3 +286,18 @@ cmds.duplicate('techo2')
 cmds.move(0,22.5,10,'techo3')
 cmds.rotate(16,0,0,'techo3')
 cmds.rotate(-16,0,0,'techo2')
+
+
+makeGroup('plafond',1)
+#build the floor base:
+
+for i in range (len(cubeNames)):
+    makePlafond(20,-30+i*2.1,19,-30,cubeNames[i],'p',1,2, 'plafond')
+
+cmds.move(0,25,0,'plafond1')
+cmds.scale(1.5,0.1,0.4,'plafond1')
+cmds.rotate('16deg',0,0,'plafond1')
+cmds.move(16,20,14,'plafond1')
+cmds.duplicate('plafond1')
+cmds.rotate('-16deg',0,0,'plafond2')
+cmds.move(16,22,-4,'plafond2')
