@@ -108,7 +108,6 @@ def makeGroup(name,num):
 #make it stone by stone using a function:
 def makePlafond(amount, initX, initY, initZ, name, floor, fuu, size,gname):
 #fuu is not "fuu" is just a number for the floor
-#convert some ints into strings:
     n = str(name)
     f = str(floor)
     fu = str(fuu)
