@@ -1,15 +1,9 @@
 import maya.cmds as cmds
 # some common vars:
 ultra = 120
-bigger = 50
-big = 40
-medium = 20
-small = 10
-smaller = 5
 scaleX = ".scaleX"
 scaleY = ".scaleY"
 scaleZ = ".scaleZ"
-counter = 0
 # list of letters:
 cubeNames = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t']
 ## base for the temple:
