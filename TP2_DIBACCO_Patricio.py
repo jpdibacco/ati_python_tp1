@@ -1,4 +1,5 @@
 import maya.cmds as cmds
+cmds.file(f=True, new=True)
 # some common vars:
 ultra = 120
 scaleX = ".scaleX"
