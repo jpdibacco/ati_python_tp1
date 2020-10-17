@@ -11,7 +11,6 @@ cubeNames = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q'
 cmds.polyPlane()
 cmds.setAttr('pPlane1.scaleX',ultra)
 cmds.setAttr('pPlane1.scaleZ',ultra)
-
 #make it stone by stone using a function:
 def makeStonesP(amount, initX, initZ, name, floor, fuu, size,gname):
 #fuu is not "fuu" is just a number for the floor
@@ -127,17 +126,23 @@ def makePlafond(amount, initX, initY, initZ, name, floor, fuu, size,gname):
 
 
 #let's build some basic objs:
-cmds.polyCube(n = 'deletePolyCube')
-cmds.polyCube(n='deleteComplexPolyCube',sx=5, sy=5, sz=5)
-cmds.polyCube(n = 'deletePolyCylinder')
-cmds.polyCylinder(n='deleteComplexPolyCylinder', h=0.5)
-cmds.polyCylinder(n='deleteComplexPolyCylinderC', sx=12, sy=12, sz=5, h=3)
-cmds.polyCylinder(n='deleteComplexPolyCylinderD', sx=12, sy=12, sz=5, h=1.5)
+def buildBasicObj():
+    cmds.polyCube(n = 'deletePolyCube')
+    cmds.polyCube(n='deleteComplexPolyCube',sx=5, sy=5, sz=5)
+    cmds.polyCube(n = 'deletePolyCylinder')
+    cmds.polyCylinder(n='deleteComplexPolyCylinder', h=0.5)
+    cmds.polyCylinder(n='deleteComplexPolyCylinderC', sx=12, sy=12, sz=5, h=3)
+    cmds.polyCylinder(n='deleteComplexPolyCylinderD', sx=12, sy=12, sz=5, h=1.5)
+    cmds.group('deletePolyCube', 'deleteComplexPolyCube','deletePolyCylinder','deleteComplexPolyCylinder', 'deleteComplexPolyCylinderC', 'deleteComplexPolyCylinderD', n = 'deleteGroup');
+
+
+#call the function buildBasicObj:
+buildBasicObj()
 # let's make a loop with the function:
 makeGroup('floor',1)
-makeGroup('column',1)
-makeGroup('column',2)
-makeGroup('column',3)
+for i in range(1,4):
+    makeGroup('column',i)
+
 #build the floor base:
 
 for i in range (len(cubeNames)):
@@ -175,28 +180,25 @@ for i in range(1,11):
     makeColumnsBase_Pd(i, -13 ,-17 ,'Gop_a'+s, 5, 'column', 3)
     makeColumnsBase_Pe(i, -13 ,-17 ,'Gop_b'+s, 5, 'column', 3)
 
-
 #some adjustments over the groups:
 cmds.move(-13,0,-25,'column3')
 cmds.rotate( 0, '90deg', 0, 'column3')
 cmds.instance( 'column3' )
 cmds.move(-13,0,0,'column4')
 cmds.rotate( 0, '90deg', 0, 'column4')
-cmds.instance( 'floor1')
-cmds.instance( 'floor2')
-cmds.instance( 'floor3')
+for i in range(1,4):
+    s = str(i)
+    cmds.instance( 'floor1')
 cmds.move(0,1,0,'floor2')
 #cmds.setAttr('floor2',s=2)
 cmds.move(0,2,0,'floor3')
 cmds.move(0,3,0,'floor4')
-cmds.scale( 1.5, 1, 1.5, 'floor1')
-cmds.scale( 1.4, 1, 1.4, 'floor2')
-cmds.scale( 1.3, 1, 1.3, 'floor3')
-cmds.scale( 1.2, 1, 1.2, 'floor4')
-cmds.scale( 1.2, 1, 1.2, 'column1')
-cmds.scale( 1.2, 1, 1.2, 'column2')
-cmds.scale( 1.2, 1, 1.2, 'column3')
-cmds.scale( 1.2, 1, 1.2, 'column4')
+for i in range(1,5):
+    s = str(i)
+    cmds.scale( 1.5 -i*0.1, 1, 1.5-i*0.1, 'floor'+s)
+for i in range(1,5):
+    s =  str(i)
+    cmds.scale( 1.2, 1, 1.2, 'column'+s)
 cmds.setAttr('column1.translateX',14)
 cmds.setAttr('column2.translateX',-10)
 cmds.setAttr('column3.translateZ',-30)
@@ -245,14 +247,11 @@ for i in range(12,24):
     cmds.move(30,15.5,10 - i*3,'minicolumn'+s)
     cmds.parent('minicolumn'+s, 'b_side1' , relative=True)
 
-
 #small adjustments:
-
 cmds.move(0,0,1,'f_side1')
 cmds.move(0,0,47.5,'b_side1')
 
 #let's make the sides:
-
 makeGroup('miniside',1)
 
 for i in range(1,5):
@@ -266,23 +265,17 @@ for i in range(1,5):
     makeColumnsBase_Pe(i, 15 ,-17 ,'n_Top_b'+s, 2, 'miniside', 1)
 
 cmds.scale(0.3,0.3,0.3,'miniside1')
-
 makeGroup('side', 1)
-
 for i in range(1,24):
     s = str(i)
     cmds.instance('miniside'+s)
     cmds.move(-39,15.5,19 - i*3,'miniside'+s)
     cmds.parent('miniside'+s, 'side1' , relative=True)
-
 cmds.rotate(0,'90deg',0,'side1')
 cmds.move(20.5,0,-16,'side1')
 cmds.instance('side1')
 cmds.move(20.5,0,-51,'side2')
-
 #let's make el "techo"
-
-
 cmds.polyCube(n='techo')
 cmds.move(0,18,1,'techo')
 cmds.scale(69,3,34, 'techo')
@@ -296,14 +289,10 @@ cmds.instance('techo2')
 cmds.move(0,22.5,10,'techo3')
 cmds.rotate(16,0,0,'techo3')
 cmds.rotate(-16,0,0,'techo2')
-
-
 makeGroup('plafond',1)
 #build the floor base:
-
 for i in range (len(cubeNames)):
     makePlafond(20,-30+i*2.1,19,-30,cubeNames[i],'p',1,2, 'plafond')
-
 cmds.move(0,25,0,'plafond1')
 cmds.scale(1.5,0.1,0.4,'plafond1')
 cmds.rotate('16deg',0,0,'plafond1')
@@ -311,5 +300,7 @@ cmds.move(16,20,14,'plafond1')
 cmds.instance('plafond1')
 cmds.rotate('-16deg',0,0,'plafond2')
 cmds.move(16,22.5,-4,'plafond2')
-
-#cmds.memory(freeMemory=True megaByte=True asFloat=True sum=True)
+#delete the unneeded assets:
+cmds.delete('deleteGroup')
+#cmds.memory(freeMemory=True megaByte=True asFloat=True sum=True) this doesn't work...
+# run in MEL: ogs -gpu to check memory
