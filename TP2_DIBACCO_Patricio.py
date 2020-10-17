@@ -23,7 +23,7 @@ def makeStonesP(amount, initX, initZ, name, floor, fuu, size,gname):
     for i in range(amount):
         # first row:
         s = str(i)
-        cmds.polyCube(name = f + n + s)
+        cmds.instance('deletePolyCube', n = f + n + s)
         cmds.move( initX, fuu, initZ + i * (size+0.1), f + n + s)
         cmds.xform(f + n + s, s = (size,1,size))
         #add the obcjects inside the groups:
@@ -34,7 +34,8 @@ def makeColumnsBase(amount, initX, initZ, name, size, gname, gnumber):
     fu = str(gnumber)
     s = str(amount)
     #base:
-    cmds.polyCube(n='a'+name+s,sx=5, sy=5, sz=5)
+    #cmds.polyCube(n='a'+name+s,sx=5, sy=5, sz=5)
+    cmds.instance('deleteComplexPolyCube', n = 'a' + name + s )
     cmds.xform('a'+name+s, s =(3,1,3))
     cmds.move(initX,5,initZ+amount*size,'a'+name+s)
     cmds.parent('a'+name+s,gname + fu, relative=True)
@@ -44,7 +45,8 @@ def makeColumnsBase_b(amount, initX, initZ, name, size, gname, gnumber):
     fu = str(gnumber)
     s = str(amount)
     #base:
-    cmds.polyCylinder(n='b'+name + s, h=0.5)
+    #cmds.polyCylinder(n='b'+name + s, h=0.5)
+    cmds.instance('deleteComplexPolyCylinder', n = 'b'+name +s)
     cmds.setAttr('b'+name+s + scaleX,1.5)
     cmds.setAttr('b'+name+s + scaleZ,1.5)
     cmds.move(initX,5.8,initZ+amount*size,'b'+name+s)
@@ -54,7 +56,8 @@ def makeColumnsBase_Pa(amount, initX, initZ, name, size, gname, gnumber):
     n = str(name)
     fu = str(gnumber)
     s = str(amount)
-    cmds.polyCylinder(n='c'+name+s, sx=12, sy=12, sz=5, h=3)
+    # cmds.polyCylinder(n='c'+name+s, sx=12, sy=12, sz=5, h=3)
+    cmds.instance('deleteComplexPolyCylinderC', n = 'c'+name +s)
     cmds.move(initX,7.5,initZ+amount*size,'c'+name+s)
     cmds.parent('c'+name+s,gname + fu, relative=True)
 
@@ -62,7 +65,8 @@ def makeColumnsBase_Pb(amount, initX, initZ, name, size, gname, gnumber):
     n = str(name)
     fu = str(gnumber)
     s = str(amount)
-    cmds.polyCylinder(n='d'+name+s, sx=12, sy=12, sz=5, h=1.5)
+    #cmds.polyCylinder(n='d'+name+s, sx=12, sy=12, sz=5, h=1.5)
+    cmds.instance('deleteComplexPolyCylinderD', n = 'd'+name +s)
     cmds.move(initX,9.7,initZ+amount*size,'d'+name+s)
     cmds.rotate( 0, '12deg', 0, 'd'+name+s)
     cmds.parent('d'+name+s,gname + fu, relative=True)
@@ -71,7 +75,8 @@ def makeColumnsBase_Pc(amount, initX, initZ, name, size, gname, gnumber):
     n = str(name)
     fu = str(gnumber)
     s = str(amount)
-    cmds.polyCylinder(n='e'+name+s, sx=12, sy=12, sz=5, h=3)
+    #cmds.polyCylinder(n='e'+name+s, sx=12, sy=12, sz=5, h=3)
+    cmds.instance('deleteComplexPolyCylinderC', n = 'e'+name +s)
     cmds.move(initX,12,initZ+amount*size,'e'+name+s)
     cmds.parent('e'+name+s,gname + fu, relative=True)
 
@@ -79,7 +84,8 @@ def makeColumnsBase_Pd(amount, initX, initZ, name, size, gname, gnumber):
     n = str(name)
     fu = str(gnumber)
     s = str(amount)
-    cmds.polyCylinder(n='g'+name+s, h=0.5)
+    # cmds.polyCylinder(n='g'+name+s, h=0.5)
+    cmds.instance('deleteComplexPolyCylinder', n = 'g'+name +s)
     cmds.setAttr('g'+name+s + scaleX,1.5)
     cmds.setAttr('g'+name+s + scaleZ,1.5)
     cmds.move(initX,13.8,initZ+amount*size,'g'+name+s)
@@ -89,7 +95,8 @@ def makeColumnsBase_Pe(amount, initX, initZ, name, size, gname, gnumber):
     n = str(name)
     fu = str(gnumber)
     s = str(amount)
-    cmds.polyCube(n='f'+name+s,sx=5, sy=5, sz=5)
+    # cmds.polyCube(n='f'+name+s,sx=5, sy=5, sz=5)
+    cmds.instance('deleteComplexPolyCube', n = 'f'+name +s)
     cmds.xform('f'+name+s, s =(3,1,3))
     cmds.move(initX,14.5,initZ+amount*size,'f'+name+s)
     cmds.parent('f'+name+s,gname + fu, relative=True)
@@ -110,13 +117,22 @@ def makePlafond(amount, initX, initY, initZ, name, floor, fuu, size,gname):
     for i in range(amount):
         # first row:
         s = str(i)
-        cmds.polyCylinder(n='p'+name+s)
+        # cmds.polyCylinder(n='p'+name+s)
+        cmds.instance('deletePolyCylinder', n = 'p' + name +s)
         cmds.move( initX, initY, initZ + i * (size+0.1), f + n + s)
         cmds.xform(f + n + s, s = (size,3,size))
         cmds.rotate(0,0,'45deg', f+n+s)
         #add the obcjects inside the groups:
         cmds.parent(f+n+s,gname+ fu , relative=True )
 
+
+#let's build some basic objs:
+cmds.polyCube(n = 'deletePolyCube')
+cmds.polyCube(n='deleteComplexPolyCube',sx=5, sy=5, sz=5)
+cmds.polyCube(n = 'deletePolyCylinder')
+cmds.polyCylinder(n='deleteComplexPolyCylinder', h=0.5)
+cmds.polyCylinder(n='deleteComplexPolyCylinderC', sx=12, sy=12, sz=5, h=3)
+cmds.polyCylinder(n='deleteComplexPolyCylinderD', sx=12, sy=12, sz=5, h=1.5)
 # let's make a loop with the function:
 makeGroup('floor',1)
 makeGroup('column',1)
@@ -294,4 +310,6 @@ cmds.rotate('16deg',0,0,'plafond1')
 cmds.move(16,20,14,'plafond1')
 cmds.instance('plafond1')
 cmds.rotate('-16deg',0,0,'plafond2')
-cmds.move(16,22,-4,'plafond2')
+cmds.move(16,22.5,-4,'plafond2')
+
+#cmds.memory(freeMemory=True megaByte=True asFloat=True sum=True)
