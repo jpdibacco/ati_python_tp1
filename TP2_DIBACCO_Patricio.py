@@ -1,3 +1,4 @@
+#for progress on this work check my public repo at: https://github.com/jpdibacco/ati_python_tp1
 import maya.cmds as cmds
 cmds.file(f=True, new=True)
 # some common vars:
@@ -300,7 +301,7 @@ cmds.move(16,20,14,'plafond1')
 cmds.instance('plafond1')
 cmds.rotate('-16deg',0,0,'plafond2')
 cmds.move(16,22.5,-4,'plafond2')
-#delete the unneeded assets:
-cmds.delete('deleteGroup')
+#delete the unneeded assets and the bug:
+cmds.delete('deleteGroup', 'minicolumn24', 'miniside24')
 #cmds.memory(freeMemory=True megaByte=True asFloat=True sum=True) this doesn't work...
 # run in MEL: ogs -gpu to check memory
