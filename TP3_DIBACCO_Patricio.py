@@ -4,7 +4,7 @@ cmds.file(f=True, new=True)
 # some common vars:
 ultra = 120 # don't touch this
 floorStones = 20 # don't touch this
-floorStages = 10 #amount of stages... more stages means less temple size.... min = 4
+floorStages = 4 #amount of stages... more stages means less temple size.... min = 4, max... mmm
 #don't touch anything below this line:
 initFloorS = floorStages + 1
 scaleX = ".scaleX"
