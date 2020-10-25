@@ -2,9 +2,10 @@
 import maya.cmds as cmds
 cmds.file(f=True, new=True)
 # some common vars:
-ultra = 120
-floorStones = 20
-floorStages = 3
+ultra = 120 # don't touch this
+floorStones = 20 # don't touch this
+floorStages = 6 #amount of stages... more stages means less temple size.... min = 4
+initFloorS = floorStages + 1
 scaleX = ".scaleX"
 scaleY = ".scaleY"
 scaleZ = ".scaleZ"
@@ -30,7 +31,7 @@ def makeStonesP(amount, initX, initZ, name, floor, fuu, size,gname):
         cmds.move( initX, fuu, initZ + i * (size+0.1), f + n + s)
         cmds.xform(f + n + s, s = (size,1,size))
         #add the obcjects inside the groups:
-        cmds.parent(f+n+s,gname+ fu , relative=True )
+        cmds.parent(f+n+s,gname+ fu)
 
 def makeColumnsBase(amount, initX, initZ, name, size, gname, gnumber):
     n = str(name)
@@ -152,8 +153,20 @@ for i in range(1,4):
 for i in range (len(cubeNames)):
     makeStonesP(floorStones,-30+i*3.1,-30,cubeNames[i],'a',1,3, 'floor')
 
-#build the columns:
+# floor stages:
 
+for i in range(1,floorStages):
+    s = str(i)
+    cmds.instance( 'floor1')
+
+for i in range(1, initFloorS):
+    cmds.move(0,i,0,'floor'+str(i))
+
+for i in range(1,initFloorS):
+    s = str(i)
+    cmds.scale( 1.5 -i*0.1, 1, 1.5-i*0.1, 'floor'+s)
+
+#build the columns:
 for i in range(1,7):
     s = str(i)
     #first 6 columns:
@@ -184,6 +197,7 @@ for i in range(1,11):
     makeColumnsBase_Pd(i, -13 ,-17 ,'Gop_a'+s, 5, 'column', 3)
     makeColumnsBase_Pe(i, -13 ,-17 ,'Gop_b'+s, 5, 'column', 3)
 
+
 #some adjustments over the groups:
 cmds.move(-13,0,-25,'column3')
 cmds.rotate( 0, '90deg', 0, 'column3')
@@ -191,18 +205,13 @@ cmds.instance( 'column3' )
 cmds.move(-13,0,0,'column4')
 cmds.rotate( 0, '90deg', 0, 'column4')
 
-# floor stages:
+#find the last # of floor and move the column groups in the top:
 
-for i in range(1,4):
-    s = str(i)
-    cmds.instance( 'floor1')
-cmds.move(0,1,0,'floor2')
-#cmds.setAttr('floor2',s=2)
-cmds.move(0,2,0,'floor3')
-cmds.move(0,3,0,'floor4')
+translateC = cmds.getAttr('floor'+ str(floorStages) +'.translateY')
+realtranslate = translateC * 0.7 # 0.7 because it's 1.2 scale and 0.5 scale
 for i in range(1,5):
-    s = str(i)
-    cmds.scale( 1.5 -i*0.1, 1, 1.5-i*0.1, 'floor'+s)
+    cmds.select('column' +str(i))
+    cmds.move(0, realtranslate, 0, relative=True, objectSpace=True, worldSpaceDistance=True )
 
 
 for i in range(1,5):
@@ -211,6 +220,7 @@ for i in range(1,5):
 cmds.setAttr('column1.translateX',14)
 cmds.setAttr('column2.translateX',-10)
 cmds.setAttr('column3.translateZ',-30)
+
 
 # build ceiling:
 
