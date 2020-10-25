@@ -4,13 +4,21 @@ cmds.file(f=True, new=True)
 # some common vars:
 ultra = 120 # don't touch this
 floorStones = 20 # don't touch this
-floorStages = 6 #amount of stages... more stages means less temple size.... min = 4
+floorStages = 10 #amount of stages... more stages means less temple size.... min = 4
+#don't touch anything below this line:
 initFloorS = floorStages + 1
 scaleX = ".scaleX"
 scaleY = ".scaleY"
 scaleZ = ".scaleZ"
 # list of letters:
 cubeNames = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t']
+# this is not elegant, just in case i run out of index:
+columnNamesA = ['Corinthian','Corin','Carin','Rota','Carin_b','Top_a','Top_b']
+columnNamesB = ['b_Corinthian','b_Corin','b_Carin','b_Rota','b_Carin_b','b_Top_a','b_Top_b']
+columnNamesC = ['c_Corinthian','c_Corin','c_Carin','c_Rota','c_Carin_b','c_Top_a','c_Top_b','c_Malaka','c_Socrates','c_Tasos','c_Arostaky']
+columnNamesD = ['d_Corinthian','d_Corin','d_Carin','d_Rota','d_Carin_b','d_Top_a','d_Top_b']
+columnNamesE = ['e_Corinthian','e_Corin','e_Carin','e_Rota','e_Carin_b','e_Top_a','e_Top_b']
+
 ## base for the temple:
 def makeBase():
     cmds.polyPlane()
@@ -37,73 +45,42 @@ def makeColumnsBase(amount, initX, initZ, name, size, gname, gnumber):
     n = str(name)
     fu = str(gnumber)
     s = str(amount)
-    #base:
-    #cmds.polyCube(n='a'+name+s,sx=5, sy=5, sz=5)
     cmds.instance('deleteComplexPolyCube', n = 'a' + name + s )
     cmds.xform('a'+name+s, s =(3,1,3))
     cmds.move(initX,5,initZ+amount*size,'a'+name+s)
     cmds.parent('a'+name+s,gname + fu, relative=True)
 
-def makeColumnsBase_b(amount, initX, initZ, name, size, gname, gnumber):
-    n = str(name)
-    fu = str(gnumber)
-    s = str(amount)
-    #base:
-    #cmds.polyCylinder(n='b'+name + s, h=0.5)
     cmds.instance('deleteComplexPolyCylinder', n = 'b'+name +s)
     cmds.setAttr('b'+name+s + scaleX,1.5)
     cmds.setAttr('b'+name+s + scaleZ,1.5)
     cmds.move(initX,5.8,initZ+amount*size,'b'+name+s)
     cmds.parent('b'+name+s,gname + fu, relative=True)
 
-def makeColumnsBase_Pa(amount, initX, initZ, name, size, gname, gnumber):
-    n = str(name)
-    fu = str(gnumber)
-    s = str(amount)
-    # cmds.polyCylinder(n='c'+name+s, sx=12, sy=12, sz=5, h=3)
     cmds.instance('deleteComplexPolyCylinderC', n = 'c'+name +s)
     cmds.move(initX,7.5,initZ+amount*size,'c'+name+s)
     cmds.parent('c'+name+s,gname + fu, relative=True)
 
-def makeColumnsBase_Pb(amount, initX, initZ, name, size, gname, gnumber):
-    n = str(name)
-    fu = str(gnumber)
-    s = str(amount)
-    #cmds.polyCylinder(n='d'+name+s, sx=12, sy=12, sz=5, h=1.5)
     cmds.instance('deleteComplexPolyCylinderD', n = 'd'+name +s)
     cmds.move(initX,9.7,initZ+amount*size,'d'+name+s)
     cmds.rotate( 0, '12deg', 0, 'd'+name+s)
     cmds.parent('d'+name+s,gname + fu, relative=True)
 
-def makeColumnsBase_Pc(amount, initX, initZ, name, size, gname, gnumber):
-    n = str(name)
-    fu = str(gnumber)
-    s = str(amount)
-    #cmds.polyCylinder(n='e'+name+s, sx=12, sy=12, sz=5, h=3)
     cmds.instance('deleteComplexPolyCylinderC', n = 'e'+name +s)
     cmds.move(initX,12,initZ+amount*size,'e'+name+s)
     cmds.parent('e'+name+s,gname + fu, relative=True)
 
-def makeColumnsBase_Pd(amount, initX, initZ, name, size, gname, gnumber):
-    n = str(name)
-    fu = str(gnumber)
-    s = str(amount)
-    # cmds.polyCylinder(n='g'+name+s, h=0.5)
     cmds.instance('deleteComplexPolyCylinder', n = 'g'+name +s)
     cmds.setAttr('g'+name+s + scaleX,1.5)
     cmds.setAttr('g'+name+s + scaleZ,1.5)
     cmds.move(initX,13.8,initZ+amount*size,'g'+name+s)
     cmds.parent('g'+name+s,gname + fu, relative=True)
 
-def makeColumnsBase_Pe(amount, initX, initZ, name, size, gname, gnumber):
-    n = str(name)
-    fu = str(gnumber)
-    s = str(amount)
-    # cmds.polyCube(n='f'+name+s,sx=5, sy=5, sz=5)
     cmds.instance('deleteComplexPolyCube', n = 'f'+name +s)
     cmds.xform('f'+name+s, s =(3,1,3))
     cmds.move(initX,14.5,initZ+amount*size,'f'+name+s)
     cmds.parent('f'+name+s,gname + fu, relative=True)
+
+
 
 #simple function to create the groups:
 def makeGroup(name,num):
@@ -167,64 +144,39 @@ for i in range(1,initFloorS):
     cmds.scale( 1.5 -i*0.1, 1, 1.5-i*0.1, 'floor'+s)
 
 #build the columns:
+
 for i in range(1,7):
     s = str(i)
     #first 6 columns:
-    makeColumnsBase(i, 15 ,-17 ,'Corinthian'+s, 5, 'column', 1)
-    makeColumnsBase_b(i, 15 ,-17 ,'Corin'+s, 5, 'column', 1)
-    makeColumnsBase_Pa(i, 15 ,-17 ,'Carin'+s, 5, 'column', 1)
-    makeColumnsBase_Pb(i, 15 ,-17 ,'Rota'+s, 5, 'column', 1)
-    makeColumnsBase_Pc(i, 15 ,-17 ,'Carin_b'+s, 5, 'column', 1)
-    makeColumnsBase_Pd(i, 15 ,-17 ,'Top_a'+s, 5, 'column', 1)
-    makeColumnsBase_Pe(i, 15 ,-17 ,'Top_b'+s, 5, 'column', 1)
+    makeColumnsBase(i, 15 ,-17 ,columnNamesA[i]+s, 5, 'column', 1)
     #second 6s c:
-    makeColumnsBase(i, -19 ,-17 ,'Sorinthian'+s, 5, 'column', 2)
-    makeColumnsBase_b(i, -19 ,-17 ,'Sorin'+s, 5, 'column', 2)
-    makeColumnsBase_Pa(i, -19 ,-17 ,'Sarin'+s, 5, 'column', 2)
-    makeColumnsBase_Pb(i, -19 ,-17 ,'Sota'+s, 5, 'column', 2)
-    makeColumnsBase_Pc(i, -19 ,-17 ,'Sarin_b'+s, 5, 'column', 2)
-    makeColumnsBase_Pd(i, -19 ,-17 ,'Sop_a'+s, 5, 'column', 2)
-    makeColumnsBase_Pe(i, -19 ,-17 ,'Sop_b'+s, 5, 'column', 2)
+    makeColumnsBase(i, 15 ,-17 ,columnNamesB[i]+s, 5, 'column', 2)
 
+#this loop will go out of range, I added more names in columnNamesC
 for i in range(1,11):
     s = str(i)
     # this 10 columns:
-    makeColumnsBase(i, -13 ,-17 ,'Gorinthian'+s, 5, 'column', 3)
-    makeColumnsBase_b(i, -13 ,-17 ,'Gorin'+s, 5, 'column', 3)
-    makeColumnsBase_Pa(i, -13 ,-17 ,'Garin'+s, 5, 'column', 3)
-    makeColumnsBase_Pb(i, -13 ,-17 ,'Gota'+s, 5, 'column', 3)
-    makeColumnsBase_Pc(i, -13 ,-17 ,'Garin_b'+s, 5, 'column', 3)
-    makeColumnsBase_Pd(i, -13 ,-17 ,'Gop_a'+s, 5, 'column', 3)
-    makeColumnsBase_Pe(i, -13 ,-17 ,'Gop_b'+s, 5, 'column', 3)
+    makeColumnsBase(i, 13 , -17 ,columnNamesC[i]+s, 5, 'column', 3)
 
 
 #some adjustments over the groups:
-cmds.move(-13,0,-25,'column3')
+cmds.move(-13,0,-25,'column3', ws = True)
 cmds.rotate( 0, '90deg', 0, 'column3')
 cmds.instance( 'column3' )
-cmds.move(-13,0,0,'column4')
+cmds.move(-13,0,0,'column4', ws = True)
 cmds.rotate( 0, '90deg', 0, 'column4')
-
-#find the last # of floor and move the column groups in the top:
-
-translateC = cmds.getAttr('floor'+ str(floorStages) +'.translateY')
-realtranslate = translateC * 0.7 # 0.7 because it's 1.2 scale and 0.5 scale
-for i in range(1,5):
-    cmds.select('column' +str(i))
-    cmds.move(0, realtranslate, 0, relative=True, objectSpace=True, worldSpaceDistance=True )
-
 
 for i in range(1,5):
     s =  str(i)
     cmds.scale( 1.2, 1, 1.2, 'column'+s)
 cmds.setAttr('column1.translateX',14)
-cmds.setAttr('column2.translateX',-10)
-cmds.setAttr('column3.translateZ',-30)
+cmds.setAttr('column2.translateX',-50)
+cmds.setAttr('column3.translateZ',31.3)
 
 
 # build ceiling:
 
-cmds.polyCube(n='rc', w=30)
+cmds.polyCube(n='rc', w= 30)
 cmds.rotate(0,'180deg',0,'rc')
 cmds.scale(2.2,2,4, 'rc')
 cmds.move(0,16,-15,'rc')
@@ -240,13 +192,7 @@ cmds.move(-33,16,1,'rc3')
 makeGroup('minicolumn',1)
 for i in range(1,4):
     s = str(i)
-    makeColumnsBase(i, 15 ,-17 ,'m_Corinthian'+s, 2, 'minicolumn', 1)
-    makeColumnsBase_b(i, 15 ,-17 ,'m_Corin'+s, 2, 'minicolumn', 1)
-    makeColumnsBase_Pa(i, 15 ,-17 ,'m_Carin'+s, 2, 'minicolumn', 1)
-    makeColumnsBase_Pb(i, 15 ,-17 ,'m_Rota'+s, 2, 'minicolumn', 1)
-    makeColumnsBase_Pc(i, 15 ,-17 ,'m_Carin_b'+s, 2, 'minicolumn', 1)
-    makeColumnsBase_Pd(i, 15 ,-17 ,'m_Top_a'+s, 2, 'minicolumn', 1)
-    makeColumnsBase_Pe(i, 15 ,-17 ,'m_Top_b'+s, 2, 'minicolumn', 1)
+    makeColumnsBase(i, 15 ,-17 ,columnNamesD[i]+s, 2, 'minicolumn', 1)
 
 cmds.scale(0.3,0.3,0.3,'minicolumn1')
 #cmds.move(-39,15.5,22,'minicolumn1')
@@ -275,13 +221,7 @@ makeGroup('miniside',1)
 
 for i in range(1,5):
     s = str(i)
-    makeColumnsBase(i, 15 ,-17 ,'n_Corinthian'+s, 2, 'miniside', 1)
-    makeColumnsBase_b(i, 15 ,-17 ,'n_Corin'+s, 2, 'miniside', 1)
-    makeColumnsBase_Pa(i, 15 ,-17 ,'n_Carin'+s, 2, 'miniside', 1)
-    makeColumnsBase_Pb(i, 15 ,-17 ,'n_Rota'+s, 2, 'miniside', 1)
-    makeColumnsBase_Pc(i, 15 ,-17 ,'n_Carin_b'+s, 2, 'miniside', 1)
-    makeColumnsBase_Pd(i, 15 ,-17 ,'n_Top_a'+s, 2, 'miniside', 1)
-    makeColumnsBase_Pe(i, 15 ,-17 ,'n_Top_b'+s, 2, 'miniside', 1)
+    makeColumnsBase(i, 15 ,-17 ,columnNamesE[i]+s, 2, 'miniside', 1)
 
 cmds.scale(0.3,0.3,0.3,'miniside1')
 makeGroup('side', 1)
@@ -321,5 +261,19 @@ cmds.rotate('-16deg',0,0,'plafond2')
 cmds.move(16,22.5,-4,'plafond2')
 #delete the unneeded assets and the bug:
 cmds.delete('deleteGroup', 'minicolumn24', 'miniside24')
+
+#let's make a big group and resize it according to the # of floors:
+cmds.group('column1', 'column2','column3','column4','rc','rc1','rc2','rc3','f_side1','b_side1','side1','side2', 'techo','techo1','techo2','techo3','plafond1','plafond2', n = 'temple')
+scaleRelative = (floorStages / 2.5) * 0.2
+cmds.scale(1.2 - scaleRelative,1.2 -scaleRelative,1.2 -scaleRelative,'temple')
+
+#find the last # of floor and move the column groups in the top:
+
+translateC = cmds.getAttr('floor'+ str(floorStages) +'.translateY')
+realtranslate = translateC * 0.7 # 0.7 because it's 1.2 scale and 0.5 scale
+cmds.select('temple')
+cmds.move(0, translateC, 0, relative=False, objectSpace=True, worldSpaceDistance=True )
+
+
 #cmds.memory(freeMemory=True megaByte=True asFloat=True sum=True) this doesn't work...
 # run in MEL: ogs -gpu to check memory
