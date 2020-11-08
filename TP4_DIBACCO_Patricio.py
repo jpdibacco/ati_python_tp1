@@ -4,9 +4,6 @@ cmds.file(f=True, new=True)
 # some common vars:
 ultra = 120 # don't touch this
 floorStones = 20 # don't touch this
-floorStages = cmds.intSliderGrp(slider3, q=True, value=True) #amount of stages... more stages means less temple size.... min = 4, max... 12 ....
-#don't touch anything below this line:
-initFloorS = floorStages + 1
 scaleX = ".scaleX"
 scaleY = ".scaleY"
 scaleZ = ".scaleZ"
@@ -21,11 +18,6 @@ columnNamesE = ['e_Corinthian','e_Corin','e_Carin','e_Rota','e_Carin_b','e_Top_a
 
 
 
-# sliders variables:
-# length = cmds.intSliderGrp(slider1, q=True, value=True)
-# width = cmds.intSliderGrp(slider2, q=True, value=True)
-# stairs = cmds.intSliderGrp(slider3, q=True, value=True)
-# height = cmds.intSliderGrp(slider4, q=True, value=True)
 
 ## Create Window UI:
 
@@ -37,12 +29,14 @@ def createWindow():
     # slider1= cmds.intSliderGrp( field=True, label='Temple Length', minValue=5, maxValue=20, value=10 )
     # slider2= cmds.intSliderGrp( field=True, label='Temple Width', minValue=5, maxValue=20, value=10 )
     # slider4= cmds.intSliderGrp( field=True, label='Temple Height', minValue=5, maxValue=20, value=10 )
-    slider3= cmds.intSliderGrp( field=True, label='Temple Stairs', minValue=4, maxValue=12, value=6 )
-    slider4= cmds.intSliderGrp( field=True, label='# of Temples', minValue=1, maxValue=10, value=1 )
+    cmds.intSliderGrp("slider3", field=True, label='Temple Stairs', minValue=4, maxValue=12, value=6 )
+    slider4 = cmds.intSliderGrp( field=True, label='# of Temples', minValue=1, maxValue=10, value=1 )
     #cmds.button(label = "Create Temple",c='buildTemple('+ slider4 +')')
     cmds.button(label = "Create Temple",c='buildTemple(1)')
     cmds.button(label = "Reset",c='cmds.file(f=True, new=True)')
     cmds.showWindow()
+
+
 
 
 ## base for the temple:
@@ -152,6 +146,11 @@ def buildTemple(amount):
     buildBasicObj()
     #call the function makeBase:
     makeBase()
+    # slider variables:
+    #amount of stages... more stages means less temple size.... min = 4, max... 12 ....
+    floorStages = cmds.intSliderGrp("slider3", q=True, value=True) 
+    #don't touch anything below this line:
+    initFloorS = floorStages + 1
     # let's make a loop with the function:
     makeGroup('floor',1)
     for i in range(1,4):
@@ -170,7 +169,20 @@ def buildTemple(amount):
         s = str(i)
         cmds.scale( 1.5 -i*0.1, 1, 1.5-i*0.1, 'floor'+s)
 
+    #build the columns:
 
+    for i in range(1,7):
+        s = str(i)
+        #first 6 columns:
+        makeColumnsBase(i, 15 ,-17 ,columnNamesA[i]+s, 5, 'column', 1)
+        #second 6s c:
+        makeColumnsBase(i, 15 ,-17 ,columnNamesB[i]+s, 5, 'column', 2)
+
+    #this loop will go out of range, I added more names in columnNamesC
+    for i in range(1,11):
+        s = str(i)
+        # this 10 columns:
+        makeColumnsBase(i, 13 , -17 ,columnNamesC[i]+s, 5, 'column', 3)
 
 createWindow()
 
@@ -186,21 +198,6 @@ createWindow()
 
 #let's block comment all these for the moment:
 """
-#build the columns:
-
-for i in range(1,7):
-    s = str(i)
-    #first 6 columns:
-    makeColumnsBase(i, 15 ,-17 ,columnNamesA[i]+s, 5, 'column', 1)
-    #second 6s c:
-    makeColumnsBase(i, 15 ,-17 ,columnNamesB[i]+s, 5, 'column', 2)
-
-#this loop will go out of range, I added more names in columnNamesC
-for i in range(1,11):
-    s = str(i)
-    # this 10 columns:
-    makeColumnsBase(i, 13 , -17 ,columnNamesC[i]+s, 5, 'column', 3)
-
 
 #some adjustments over the groups:
 cmds.move(-13,0,-25,'column3', ws = True)
