@@ -27,10 +27,10 @@ def createWindow():
     # avec valeurs min, max et par défaut
     # cmds.button(label = "I'm felling lucky ! ",c='randomValues()')
     # slider1= cmds.intSliderGrp( field=True, label='Temple Length', minValue=5, maxValue=20, value=10 )
-    # slider2= cmds.intSliderGrp( field=True, label='Temple Width', minValue=5, maxValue=20, value=10 )
-    # slider4= cmds.intSliderGrp( field=True, label='Temple Height', minValue=5, maxValue=20, value=10 )
-    cmds.intSliderGrp("slider3", field=True, label='Temple Stairs', minValue=4, maxValue=12, value=6 )
-    slider4 = cmds.intSliderGrp( field=True, label='# of Temples', minValue=1, maxValue=10, value=1 )
+    cmds.intSliderGrp("slider1", field=True, label='Temple Width', minValue=5, maxValue=20, value=10 )
+    cmds.intSliderGrp("slider2", field=True, label='Temple Height', minValue=1, maxValue=10, value=1 )
+    cmds.intSliderGrp("slider3", field=True, label='Temple Stairs', minValue=1, maxValue=12, value=6 )
+    cmds.intSliderGrp("slider4", field=True, label='# of Temples', minValue=1, maxValue=10, value=1 )
     #cmds.button(label = "Create Temple",c='buildTemple('+ slider4 +')')
     cmds.button(label = "Create Temple",c='buildTemple(1)')
     cmds.button(label = "Reset",c='cmds.file(f=True, new=True)')
@@ -148,7 +148,7 @@ def buildTemple(amount):
     makeBase()
     # slider variables:
     #amount of stages... more stages means less temple size.... min = 4, max... 12 ....
-    floorStages = cmds.intSliderGrp("slider3", q=True, value=True) 
+    floorStages = cmds.intSliderGrp("slider3", q=True, value=True)
     #don't touch anything below this line:
     initFloorS = floorStages + 1
     # let's make a loop with the function:
@@ -162,7 +162,7 @@ def buildTemple(amount):
     # floor stages:
     for i in range(1,floorStages):
         s = str(i)
-        cmds.instance( 'floor1')
+        cmds.instance('floor1')
     for i in range(1, initFloorS):
         cmds.move(0,i,0,'floor'+str(i))
     for i in range(1,initFloorS):
@@ -170,7 +170,6 @@ def buildTemple(amount):
         cmds.scale( 1.5 -i*0.1, 1, 1.5-i*0.1, 'floor'+s)
 
     #build the columns:
-
     for i in range(1,7):
         s = str(i)
         #first 6 columns:
@@ -183,6 +182,25 @@ def buildTemple(amount):
         s = str(i)
         # this 10 columns:
         makeColumnsBase(i, 13 , -17 ,columnNamesC[i]+s, 5, 'column', 3)
+    #some adjustments over the groups:
+    translateC = cmds.getAttr('floor'+ str(floorStages) +'.translateY')
+    cmds.move(-13,1,-25,'column3', ws = True)
+    cmds.rotate( 0, '90deg', 0, 'column3')
+    cmds.instance( 'column3' )
+    cmds.move(-13,1,0,'column4', ws = True)
+    cmds.rotate( 0, '90deg', 0, 'column4')
+
+    #temple height variable:
+    templeHeight = cmds.intSliderGrp("slider2", q=True, value=True)
+    for i in range(1,5):
+        s =  str(i)
+        cmds.xform('column' + s, cp=1)
+        cmds.scale( 1.2, templeHeight, 1.2, 'column'+s)
+        cmds.select('column'+s)
+        cmds.move(translateC*templeHeight - translateC, y= True, spr=True)
+    cmds.setAttr('column1.translateX',14)
+    cmds.setAttr('column2.translateX',-50)
+    cmds.setAttr('column3.translateZ',31.3)
 
 createWindow()
 
@@ -198,21 +216,6 @@ createWindow()
 
 #let's block comment all these for the moment:
 """
-
-#some adjustments over the groups:
-cmds.move(-13,0,-25,'column3', ws = True)
-cmds.rotate( 0, '90deg', 0, 'column3')
-cmds.instance( 'column3' )
-cmds.move(-13,0,0,'column4', ws = True)
-cmds.rotate( 0, '90deg', 0, 'column4')
-
-for i in range(1,5):
-    s =  str(i)
-    cmds.scale( 1.2, 1, 1.2, 'column'+s)
-cmds.setAttr('column1.translateX',14)
-cmds.setAttr('column2.translateX',-50)
-cmds.setAttr('column3.translateZ',31.3)
-
 
 # build ceiling:
 
