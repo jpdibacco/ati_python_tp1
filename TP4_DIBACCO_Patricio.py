@@ -29,7 +29,7 @@ def createWindow():
     # slider1= cmds.intSliderGrp( field=True, label='Temple Length', minValue=5, maxValue=20, value=10 )
     cmds.intSliderGrp("slider1", field=True, label='Temple Width', minValue=5, maxValue=20, value=10 )
     cmds.intSliderGrp("slider2", field=True, label='Temple Height', minValue=1, maxValue=10, value=1 )
-    cmds.intSliderGrp("slider3", field=True, label='Temple Stairs', minValue=1, maxValue=6, value=3 )
+    cmds.intSliderGrp("slider3", field=True, label='Temple Stairs', minValue=1, maxValue=5, value=2 )
     cmds.intSliderGrp("slider4", field=True, label='# of Temples', minValue=1, maxValue=10, value=1 )
     #cmds.button(label = "Create Temple",c='buildTemple('+ slider4 +')')
     cmds.button(label = "Create Temple",c='buildTemple(1)')
