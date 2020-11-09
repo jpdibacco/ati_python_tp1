@@ -10,9 +10,9 @@ scaleZ = ".scaleZ"
 # list of letters:
 cubeNames = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t']
 # this is not elegant, just in case i run out of index:
-columnNamesA = ['Corinthian','Corin','Carin','Rota','Carin_b','Top_a','Top_b']
-columnNamesB = ['b_Corinthian','b_Corin','b_Carin','b_Rota','b_Carin_b','b_Top_a','b_Top_b']
-columnNamesC = ['c_Corinthian','c_Corin','c_Carin','c_Rota','c_Carin_b','c_Top_a','c_Top_b','c_Malaka','c_Socrates','c_Tasos','c_Arostaky']
+columnNamesA = ['Corinthian','Corin','Carin','Rota','Carin_b','Top_a','Top_b', 'a_Ena','a_Dio','a_Tria','a_Tesera','a_Pende','a_Exi','a_Epta','a_Okto','a_Enea','a_Deka']
+columnNamesB = ['b_Corinthian','b_Corin','b_Carin','b_Rota','b_Carin_b','b_Top_a','b_Top_b','b_Tria','b_Tesera','b_Pende','b_Exi','b_Epta','b_Okto','b_Enea','b_Deka']
+columnNamesC = ['c_Corinthian','c_Corin','c_Carin','c_Rota','c_Carin_b','c_Top_a','c_Top_b','c_Malaka','c_Socrates','c_Tasos','c_Arostaky','c_Ena','c_Dio','c_Tria','c_Tesera','c_Pende','c_Exi','c_Epta','c_Okto','c_Enea','c_Deka']
 columnNamesD = ['d_Corinthian','d_Corin','d_Carin','d_Rota','d_Carin_b','d_Top_a','d_Top_b']
 columnNamesE = ['e_Corinthian','e_Corin','e_Carin','e_Rota','e_Carin_b','e_Top_a','e_Top_b']
 
@@ -27,7 +27,7 @@ def createWindow():
     # avec valeurs min, max et par défaut
     # cmds.button(label = "I'm felling lucky ! ",c='randomValues()')
     # slider1= cmds.intSliderGrp( field=True, label='Temple Length', minValue=5, maxValue=20, value=10 )
-    cmds.intSliderGrp("slider1", field=True, label='Temple Width', minValue=5, maxValue=20, value=10 )
+    cmds.intSliderGrp("slider1", field=True, label='Temple Width', minValue=4, maxValue=10, value=7 )
     cmds.intSliderGrp("slider2", field=True, label='Temple Height', minValue=1, maxValue=10, value=1 )
     cmds.intSliderGrp("slider3", field=True, label='Temple Stairs', minValue=1, maxValue=5, value=2 )
     cmds.intSliderGrp("slider4", field=True, label='# of Temples', minValue=1, maxValue=10, value=1 )
@@ -168,25 +168,35 @@ def buildTemple(amount):
     for i in range(0,floorStages):
         s = str(i+1)
         cmds.scale( 1.5 -i*0.1, 1, 1.5-i*0.1, 'floor'+s)
-
+    
+    #width of temple... here we go...............CRASH!!!!!!!!!!!!!!!!!-------------?????????
+    templeWidth = cmds.intSliderGrp("slider1", q=True, value=True)
     #build the columns:
-    for i in range(1,7):
+    for i in range(0,templeWidth):
         s = str(i)
         #first 6 columns:
         makeColumnsBase(i, 15 ,-17 ,columnNamesA[i]+s, 5, 'column', 1)
         #second 6s c:
         makeColumnsBase(i, 15 ,-17 ,columnNamesB[i]+s, 5, 'column', 2)
-
+    #center columns:
+    xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform('column1', query=True, bb=True)
+    # print xmax
+    # print xmin
+    # print zmax - zmin
+    totalCWidth = zmax - zmin
+    # cmds.setAttr('column1.translateZ',totalCWidth/2)
+    # cmds.setAttr('column2.translateZ',totalCWidth/2)
     #this loop will go out of range, I added more names in columnNamesC
     for i in range(1,11):
         s = str(i)
         # this 10 columns:
         makeColumnsBase(i, 13 , -17 ,columnNamesC[i]+s, 5, 'column', 3)
     #some adjustments over the groups:
-    cmds.move(-13,0,-25,'column3', ws = True)
+    # cmds.move(-13,0,-25,'column3', ws = True)
+    cmds.move(-13,0,totalCWidth/2,'column3', ws = True)
     cmds.rotate( 0, '90deg', 0, 'column3')
     cmds.instance( 'column3' )
-    cmds.move(-13,0,0,'column4', ws = True)
+    cmds.move(-13,0,(-1)*totalCWidth/2 ,'column4', ws = True)
     cmds.rotate( 0, '90deg', 0, 'column4')
 
     #temple height variable:
@@ -201,6 +211,10 @@ def buildTemple(amount):
         #cmds.move(9.75*templeHeight + floorStages/2, y = True, spr=True)
         #cmds.move(floorStages*templeHeight + templeHeight + floorStages + floorStages/2  , y= True, spr=True)
         cmds.move(9.75*templeHeight/2 + floorStages + floorStages/2, y=True, spr=True, ws=True)
+    cmds.select('column1', 'column2')
+    cmds.move(0,z=1, ws = True, spr=True)
+
+
     cmds.setAttr('column1.translateX',14)
     cmds.setAttr('column2.translateX',-50)
     cmds.setAttr('column3.translateZ',31.3)
