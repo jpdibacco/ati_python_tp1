@@ -2,7 +2,7 @@
 import maya.cmds as cmds
 cmds.file(f=True, new=True)
 # some common vars:
-ultra = 120 # don't touch this
+ultra = 240 # don't touch this
 floorStones = 20 # don't touch this
 scaleX = ".scaleX"
 scaleY = ".scaleY"
@@ -30,7 +30,7 @@ def createWindow():
     cmds.intSliderGrp("slider1", field=True, label='Temple Width', minValue=4, maxValue=10, value=7 )
     cmds.intSliderGrp("slider2", field=True, label='Temple Height', minValue=1, maxValue=10, value=1 )
     cmds.intSliderGrp("slider3", field=True, label='Temple Stairs', minValue=1, maxValue=5, value=2 )
-    cmds.intSliderGrp("slider4", field=True, label='# of Temples', minValue=1, maxValue=10, value=1 )
+    # cmds.intSliderGrp("slider4", field=True, label='# of Temples', minValue=1, maxValue=10, value=1 )
     #cmds.button(label = "Create Temple",c='buildTemple('+ slider4 +')')
     cmds.button(label = "Create Temple",c='buildTemple(1)')
     cmds.button(label = "Reset",c='cmds.file(f=True, new=True)')
@@ -167,7 +167,7 @@ def buildTemple(amount):
         cmds.move(0,i,0,'floor'+str(i+1))
     for i in range(0,floorStages):
         s = str(i+1)
-        cmds.scale( 1.5 -i*0.1, 1, 1.5-i*0.1, 'floor'+s)
+        cmds.scale( 3 -i*0.1, 1, 3-i*0.1, 'floor'+s)
     
     #width of temple... here we go...............CRASH!!!!!!!!!!!!!!!!!-------------?????????
     templeWidth = cmds.intSliderGrp("slider1", q=True, value=True)
@@ -193,11 +193,11 @@ def buildTemple(amount):
         makeColumnsBase(i, 13 , -17 ,columnNamesC[i]+s, 5, 'column', 3)
     #some adjustments over the groups:
     # cmds.move(-13,0,-25,'column3', ws = True)
-    cmds.move(-13,0,totalCWidth/2,'column3', ws = True)
-    cmds.rotate( 0, '90deg', 0, 'column3')
+    # cmds.move(-13,0,totalCWidth/2,'column3', spr= True , ws = True)
+    # cmds.rotate( 0, '90deg', 0, 'column3')
     cmds.instance( 'column3' )
-    cmds.move(-13,0,(-1)*totalCWidth/2 ,'column4', ws = True)
-    cmds.rotate( 0, '90deg', 0, 'column4')
+    # cmds.move(-13,0,(-1)*totalCWidth/2 ,'column4', spr= True, ws = True)
+    # cmds.rotate( 0, '90deg', 0, 'column4')
 
     #temple height variable:
     templeHeight = cmds.intSliderGrp("slider2", q=True, value=True)
@@ -213,11 +213,18 @@ def buildTemple(amount):
         cmds.move(9.75*templeHeight/2 + floorStages + floorStages/2, y=True, spr=True, ws=True)
     cmds.select('column1', 'column2')
     cmds.move(0,z=1, ws = True, spr=True)
-
+    cmds.select('column3')
+    cmds.move(0, totalCWidth,xz=True, ws = True, spr=True)
+    cmds.rotate( 0, '90deg', 0, 'column3')
+    cmds.select('column4')
+    cmds.move(0,(-1)*totalCWidth,xz= True, ws = True, spr=True)
+    cmds.rotate( 0, '90deg', 0, 'column4')
+    # cmds.select('column3')
+    # cmds.move(totalCWidth/2 + totalCWidth/4,z=1, ws = True, spr=True)
 
     cmds.setAttr('column1.translateX',14)
     cmds.setAttr('column2.translateX',-50)
-    cmds.setAttr('column3.translateZ',31.3)
+    #cmds.setAttr('column3.translateZ',31.3)
 
     #let's find the height of a column.... uff
     # cmds.select('column2')
