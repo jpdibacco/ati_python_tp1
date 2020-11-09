@@ -29,7 +29,7 @@ def createWindow():
     # slider1= cmds.intSliderGrp( field=True, label='Temple Length', minValue=5, maxValue=20, value=10 )
     cmds.intSliderGrp("slider1", field=True, label='Temple Width', minValue=5, maxValue=20, value=10 )
     cmds.intSliderGrp("slider2", field=True, label='Temple Height', minValue=1, maxValue=10, value=1 )
-    cmds.intSliderGrp("slider3", field=True, label='Temple Stairs', minValue=1, maxValue=12, value=6 )
+    cmds.intSliderGrp("slider3", field=True, label='Temple Stairs', minValue=1, maxValue=6, value=3 )
     cmds.intSliderGrp("slider4", field=True, label='# of Temples', minValue=1, maxValue=10, value=1 )
     #cmds.button(label = "Create Temple",c='buildTemple('+ slider4 +')')
     cmds.button(label = "Create Temple",c='buildTemple(1)')
@@ -163,10 +163,10 @@ def buildTemple(amount):
     for i in range(1,floorStages):
         s = str(i)
         cmds.instance('floor1')
-    for i in range(1, initFloorS):
-        cmds.move(0,i,0,'floor'+str(i))
-    for i in range(1,initFloorS):
-        s = str(i)
+    for i in range(0, floorStages):
+        cmds.move(0,i,0,'floor'+str(i+1))
+    for i in range(0,floorStages):
+        s = str(i+1)
         cmds.scale( 1.5 -i*0.1, 1, 1.5-i*0.1, 'floor'+s)
 
     #build the columns:
@@ -183,24 +183,41 @@ def buildTemple(amount):
         # this 10 columns:
         makeColumnsBase(i, 13 , -17 ,columnNamesC[i]+s, 5, 'column', 3)
     #some adjustments over the groups:
-    translateC = cmds.getAttr('floor'+ str(floorStages) +'.translateY')
-    cmds.move(-13,1,-25,'column3', ws = True)
+    cmds.move(-13,0,-25,'column3', ws = True)
     cmds.rotate( 0, '90deg', 0, 'column3')
     cmds.instance( 'column3' )
-    cmds.move(-13,1,0,'column4', ws = True)
+    cmds.move(-13,0,0,'column4', ws = True)
     cmds.rotate( 0, '90deg', 0, 'column4')
 
     #temple height variable:
     templeHeight = cmds.intSliderGrp("slider2", q=True, value=True)
     for i in range(1,5):
         s =  str(i)
-        cmds.xform('column' + s, cp=1)
-        cmds.scale( 1.2, templeHeight, 1.2, 'column'+s)
+        #cmds.xform('column' + s, cp=1, s=(1.2, templeHeight, 1.2))
+        cmds.xform('column' + s, cp=1, s=(1.2,templeHeight,1.2))
+        #cmds.scale( 1.2, templeHeight, 1.2, 'column'+s)
         cmds.select('column'+s)
-        cmds.move(translateC*templeHeight - translateC, y= True, spr=True)
+        #cmds.move(0, y = True, spr=True)
+        #cmds.move(9.75*templeHeight + floorStages/2, y = True, spr=True)
+        #cmds.move(floorStages*templeHeight + templeHeight + floorStages + floorStages/2  , y= True, spr=True)
+        cmds.move(9.75*templeHeight/2 + floorStages + floorStages/2, y=True, spr=True, ws=True)
     cmds.setAttr('column1.translateX',14)
     cmds.setAttr('column2.translateX',-50)
     cmds.setAttr('column3.translateZ',31.3)
+
+    #let's find the height of a column.... uff
+    # cmds.select('column2')
+    # xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform('column2', query=True, bb=True)
+    # print ymax
+    # print ymin
+    # print ymax - ymin
+    # totalH = ymax - ymin
+    # for i in range(1,5):
+    #     s =  str(i)
+    #     cmds.select('column'+s)
+    #     # cmds.move(-totalH/2 + floorStages*floorStages/2, y=True, spr=True)
+    #     cmds.move(9.75*templeHeight/2 + floorStages + floorStages/2, y=True, spr=True, ws=True)
+
 
 createWindow()
 
