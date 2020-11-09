@@ -16,28 +16,18 @@ columnNamesC = ['c_Corinthian','c_Corin','c_Carin','c_Rota','c_Carin_b','c_Top_a
 columnNamesD = ['d_Corinthian','d_Corin','d_Carin','d_Rota','d_Carin_b','d_Top_a','d_Top_b']
 columnNamesE = ['e_Corinthian','e_Corin','e_Carin','e_Rota','e_Carin_b','e_Top_a','e_Top_b']
 
-
-
-
 ## Create Window UI:
 
 def createWindow():
     cmds.window(title = "Temple Generator © ATI", widthHeight=(450, 350))
     cmds.columnLayout()
-    # avec valeurs min, max et par défaut
-    # cmds.button(label = "I'm felling lucky ! ",c='randomValues()')
-    # slider1= cmds.intSliderGrp( field=True, label='Temple Length', minValue=5, maxValue=20, value=10 )
     cmds.intSliderGrp("slider1", field=True, label='Temple Width', minValue=4, maxValue=10, value=7 )
     cmds.intSliderGrp("slider2", field=True, label='Temple Height', minValue=1, maxValue=10, value=1 )
     cmds.intSliderGrp("slider3", field=True, label='Temple Stairs', minValue=1, maxValue=5, value=2 )
-    # cmds.intSliderGrp("slider4", field=True, label='# of Temples', minValue=1, maxValue=10, value=1 )
-    #cmds.button(label = "Create Temple",c='buildTemple('+ slider4 +')')
-    cmds.button(label = "Create Temple",c='buildTemple(1)')
+    cmds.button(label = "Create Temple",c='buildTemple()')
     cmds.button(label = "Reset",c='cmds.file(f=True, new=True)')
+    cmds.button(label="Fix plafond", c='fixPlafond()')
     cmds.showWindow()
-
-
-
 
 ## base for the temple:
 
@@ -141,7 +131,7 @@ def buildBasicObj():
 
 #let's make the buildTemple function:
 
-def buildTemple(amount):
+def buildTemple():
     #call the function buildBasicObj:
     buildBasicObj()
     #call the function makeBase:
@@ -167,7 +157,7 @@ def buildTemple(amount):
         cmds.move(0,i,0,'floor'+str(i+1))
     for i in range(0,floorStages):
         s = str(i+1)
-        cmds.scale( 3 -i*0.1, 1, 3-i*0.1, 'floor'+s)
+        cmds.scale( 2 -i*0.1, 1, 2-i*0.1, 'floor'+s)
     
     #width of temple... here we go...............CRASH!!!!!!!!!!!!!!!!!-------------?????????
     templeWidth = cmds.intSliderGrp("slider1", q=True, value=True)
@@ -180,37 +170,23 @@ def buildTemple(amount):
         makeColumnsBase(i, 15 ,-17 ,columnNamesB[i]+s, 5, 'column', 2)
     #center columns:
     xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform('column1', query=True, bb=True)
-    # print xmax
-    # print xmin
-    # print zmax - zmin
     totalCWidth = zmax - zmin
-    # cmds.setAttr('column1.translateZ',totalCWidth/2)
-    # cmds.setAttr('column2.translateZ',totalCWidth/2)
     #this loop will go out of range, I added more names in columnNamesC
     for i in range(1,11):
         s = str(i)
         # this 10 columns:
         makeColumnsBase(i, 13 , -17 ,columnNamesC[i]+s, 5, 'column', 3)
     #some adjustments over the groups:
-    # cmds.move(-13,0,-25,'column3', ws = True)
-    # cmds.move(-13,0,totalCWidth/2,'column3', spr= True , ws = True)
-    # cmds.rotate( 0, '90deg', 0, 'column3')
     cmds.instance( 'column3' )
-    # cmds.move(-13,0,(-1)*totalCWidth/2 ,'column4', spr= True, ws = True)
-    # cmds.rotate( 0, '90deg', 0, 'column4')
 
     #temple height variable:
     templeHeight = cmds.intSliderGrp("slider2", q=True, value=True)
     for i in range(1,5):
         s =  str(i)
-        #cmds.xform('column' + s, cp=1, s=(1.2, templeHeight, 1.2))
         cmds.xform('column' + s, cp=1, s=(1.2,templeHeight,1.2))
-        #cmds.scale( 1.2, templeHeight, 1.2, 'column'+s)
         cmds.select('column'+s)
-        #cmds.move(0, y = True, spr=True)
-        #cmds.move(9.75*templeHeight + floorStages/2, y = True, spr=True)
-        #cmds.move(floorStages*templeHeight + templeHeight + floorStages + floorStages/2  , y= True, spr=True)
         cmds.move(9.75*templeHeight/2 + floorStages + floorStages/2, y=True, spr=True, ws=True)
+
     cmds.select('column1', 'column2')
     cmds.move(0,z=1, ws = True, spr=True)
     cmds.select('column3')
@@ -219,26 +195,115 @@ def buildTemple(amount):
     cmds.select('column4')
     cmds.move(0,(-1)*totalCWidth,xz= True, ws = True, spr=True)
     cmds.rotate( 0, '90deg', 0, 'column4')
-    # cmds.select('column3')
-    # cmds.move(totalCWidth/2 + totalCWidth/4,z=1, ws = True, spr=True)
 
     cmds.setAttr('column1.translateX',14)
     cmds.setAttr('column2.translateX',-50)
-    #cmds.setAttr('column3.translateZ',31.3)
 
-    #let's find the height of a column.... uff
-    # cmds.select('column2')
-    # xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform('column2', query=True, bb=True)
-    # print ymax
-    # print ymin
-    # print ymax - ymin
-    # totalH = ymax - ymin
-    # for i in range(1,5):
-    #     s =  str(i)
-    #     cmds.select('column'+s)
-    #     # cmds.move(-totalH/2 + floorStages*floorStages/2, y=True, spr=True)
-    #     cmds.move(9.75*templeHeight/2 + floorStages + floorStages/2, y=True, spr=True, ws=True)
 
+    # build ceiling:
+
+    cmds.polyCube(n='rc', w= 30)
+    cmds.rotate(0,'180deg',0,'rc')
+    cmds.scale(2.2,2,4, 'rc')
+    cmds.move(0,16,-15,'rc')
+    cmds.instance('rc')
+    cmds.move(0,16,17,'rc1')
+    cmds.instance('rc1')
+    cmds.rotate(0,'90deg',0,'rc2')
+    cmds.scale(1.2,2,4, 'rc2')
+    cmds.move(33,16,1,'rc2')
+    cmds.instance('rc2')
+    cmds.move(-33,16,1,'rc3')
+
+    makeGroup('minicolumn',1)
+    for i in range(1,4):
+        s = str(i)
+        makeColumnsBase(i, 15 ,-17 ,columnNamesD[i]+s, 2, 'minicolumn', 1)
+
+    cmds.scale(0.3,0.3,0.3,'minicolumn1')
+    #cmds.move(-39,15.5,22,'minicolumn1')
+    makeGroup('f_side',1)
+    #cmds.parent('minicolumn1', 'f_side1' , relative=True)
+    makeGroup('b_side',1)
+    # let's try to loop this...
+    for i in range(1,12):
+        s = str(i)
+        cmds.instance('minicolumn'+s)
+        cmds.move(-39,15.5,22 - i*3,'minicolumn'+s)
+        cmds.parent('minicolumn'+s, 'f_side1' , relative=True)
+
+    for i in range(12,24):
+        s = str(i)
+        cmds.instance('minicolumn'+s)
+        cmds.move(30,15.5,10 - i*3,'minicolumn'+s)
+        cmds.parent('minicolumn'+s, 'b_side1' , relative=True)
+
+    #small adjustments:
+    cmds.move(0,0,1,'f_side1')
+    cmds.move(0,0,47.5,'b_side1')
+
+    #let's make the sides:
+    makeGroup('miniside',1)
+
+    for i in range(1,5):
+        s = str(i)
+        makeColumnsBase(i, 15 ,-17 ,columnNamesE[i]+s, 2, 'miniside', 1)
+
+    cmds.scale(0.3,0.3,0.3,'miniside1')
+    makeGroup('side', 1)
+    for i in range(1,24):
+        s = str(i)
+        cmds.instance('miniside'+s)
+        cmds.move(-39,15.5,19 - i*3,'miniside'+s)
+        cmds.parent('miniside'+s, 'side1' , relative=True)
+    cmds.rotate(0,'90deg',0,'side1')
+    cmds.move(20.5,0,-16,'side1')
+    cmds.instance('side1')
+    cmds.move(20.5,0,-51,'side2')
+    #let's make el "techo"
+    cmds.polyCube(n='techo')
+    cmds.move(0,18,1,'techo')
+    cmds.scale(69,3,34, 'techo')
+    cmds.instance('techo')
+    cmds.scale(72,1,38, 'techo1')
+    cmds.move(0,20.5,1,'techo1')
+    cmds.instance('techo1')
+    cmds.scale(68,1,19, 'techo2')
+    cmds.move(0,22.5,-8,'techo2')
+    cmds.instance('techo2')
+    cmds.move(0,22.5,10,'techo3')
+    cmds.rotate(16,0,0,'techo3')
+    cmds.rotate(-16,0,0,'techo2')
+    makeGroup('plafond',1)
+    #build the floor base:
+    for i in range (len(cubeNames)):
+        makePlafond(20,-30+i*2.1,19,-30,cubeNames[i],'p',1,2, 'plafond')
+    cmds.move(0,25,0,'plafond1')
+    cmds.scale(1.5,0.1,0.4,'plafond1')
+    cmds.rotate('16deg',0,0,'plafond1')
+    cmds.move(16,20,14,'plafond1')
+    cmds.instance('plafond1')
+    cmds.rotate('-16deg',0,0,'plafond2')
+    cmds.move(16,22.5,-4,'plafond2')
+    #delete the unneeded assets and the bug:
+    cmds.delete('deleteGroup', 'minicolumn24', 'miniside24')
+    #let's make a big group and resize it according to the # of floors:
+    cmds.group('rc','rc1','rc2','rc3','f_side1','b_side1','side1','side2', 'techo','techo1','techo2','techo3','plafond1','plafond2', n = 'temple')
+    scaleRelative = (floorStages+1)/2
+    #cmds.scale(scaleRelative,scaleRelative,scaleRelative,'temple')
+    cmds.xform('temple', cp=1, s=(scaleRelative,scaleRelative,scaleRelative))
+    totalCHeight = ymax - ymin
+    cmds.select('temple')
+    cmds.move(totalCHeight + totalCHeight/6, y= True,  ws = True, spr=True)
+    cmds.rotate( 0, '90deg', 0, 'temple')
+
+#there's a problem with the ceiling ,,,, we will fix later? thanks!
+
+def fixPlafond():
+    xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform('column1', query=True, bb=True)
+    totalCHeight = ymax - ymin
+    cmds.select('temple')
+    cmds.move(totalCHeight + totalCHeight/6, y= True,  ws = True, spr=True)
 
 createWindow()
 
@@ -251,97 +316,8 @@ createWindow()
 
 
 
-
 #let's block comment all these for the moment:
 """
-
-# build ceiling:
-
-cmds.polyCube(n='rc', w= 30)
-cmds.rotate(0,'180deg',0,'rc')
-cmds.scale(2.2,2,4, 'rc')
-cmds.move(0,16,-15,'rc')
-cmds.instance('rc')
-cmds.move(0,16,17,'rc1')
-cmds.instance('rc1')
-cmds.rotate(0,'90deg',0,'rc2')
-cmds.scale(1.2,2,4, 'rc2')
-cmds.move(33,16,1,'rc2')
-cmds.instance('rc2')
-cmds.move(-33,16,1,'rc3')
-
-makeGroup('minicolumn',1)
-for i in range(1,4):
-    s = str(i)
-    makeColumnsBase(i, 15 ,-17 ,columnNamesD[i]+s, 2, 'minicolumn', 1)
-
-cmds.scale(0.3,0.3,0.3,'minicolumn1')
-#cmds.move(-39,15.5,22,'minicolumn1')
-makeGroup('f_side',1)
-#cmds.parent('minicolumn1', 'f_side1' , relative=True)
-makeGroup('b_side',1)
-# let's try to loop this...
-for i in range(1,12):
-    s = str(i)
-    cmds.instance('minicolumn'+s)
-    cmds.move(-39,15.5,22 - i*3,'minicolumn'+s)
-    cmds.parent('minicolumn'+s, 'f_side1' , relative=True)
-
-for i in range(12,24):
-    s = str(i)
-    cmds.instance('minicolumn'+s)
-    cmds.move(30,15.5,10 - i*3,'minicolumn'+s)
-    cmds.parent('minicolumn'+s, 'b_side1' , relative=True)
-
-#small adjustments:
-cmds.move(0,0,1,'f_side1')
-cmds.move(0,0,47.5,'b_side1')
-
-#let's make the sides:
-makeGroup('miniside',1)
-
-for i in range(1,5):
-    s = str(i)
-    makeColumnsBase(i, 15 ,-17 ,columnNamesE[i]+s, 2, 'miniside', 1)
-
-cmds.scale(0.3,0.3,0.3,'miniside1')
-makeGroup('side', 1)
-for i in range(1,24):
-    s = str(i)
-    cmds.instance('miniside'+s)
-    cmds.move(-39,15.5,19 - i*3,'miniside'+s)
-    cmds.parent('miniside'+s, 'side1' , relative=True)
-cmds.rotate(0,'90deg',0,'side1')
-cmds.move(20.5,0,-16,'side1')
-cmds.instance('side1')
-cmds.move(20.5,0,-51,'side2')
-#let's make el "techo"
-cmds.polyCube(n='techo')
-cmds.move(0,18,1,'techo')
-cmds.scale(69,3,34, 'techo')
-cmds.instance('techo')
-cmds.scale(72,1,38, 'techo1')
-cmds.move(0,20.5,1,'techo1')
-cmds.instance('techo1')
-cmds.scale(68,1,19, 'techo2')
-cmds.move(0,22.5,-8,'techo2')
-cmds.instance('techo2')
-cmds.move(0,22.5,10,'techo3')
-cmds.rotate(16,0,0,'techo3')
-cmds.rotate(-16,0,0,'techo2')
-makeGroup('plafond',1)
-#build the floor base:
-for i in range (len(cubeNames)):
-    makePlafond(20,-30+i*2.1,19,-30,cubeNames[i],'p',1,2, 'plafond')
-cmds.move(0,25,0,'plafond1')
-cmds.scale(1.5,0.1,0.4,'plafond1')
-cmds.rotate('16deg',0,0,'plafond1')
-cmds.move(16,20,14,'plafond1')
-cmds.instance('plafond1')
-cmds.rotate('-16deg',0,0,'plafond2')
-cmds.move(16,22.5,-4,'plafond2')
-#delete the unneeded assets and the bug:
-cmds.delete('deleteGroup', 'minicolumn24', 'miniside24')
 
 #let's make a big group and resize it according to the # of floors:
 cmds.group('column1', 'column2','column3','column4','rc','rc1','rc2','rc3','f_side1','b_side1','side1','side2', 'techo','techo1','techo2','techo3','plafond1','plafond2', n = 'temple')
